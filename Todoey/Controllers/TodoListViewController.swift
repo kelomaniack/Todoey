@@ -74,13 +74,16 @@ class TodoListViewController: UITableViewController {
         let action = UIAlertAction(title: "Add Item", style: .default) { (action) in
             // What will happen once the user clicks the Add Item button on our UIAlert
             
-            let newItem = Item(context: self.context)
-            newItem.title = textField.text!
-            newItem.done = false
-            newItem.parentCategory = self.selectedCategory
-            self.itemArray.append(newItem)
             
-            self.saveItems()
+                let newItem = Item(context: self.context)
+                newItem.title = textField.text!
+                newItem.done = false
+                newItem.parentCategory = self.selectedCategory
+                
+                self.itemArray.append(newItem)
+            
+                self.saveItems()
+            
         }
         
         alert.addTextField {(alertTextField) in
@@ -114,15 +117,11 @@ class TodoListViewController: UITableViewController {
         let categoryPredicate = NSPredicate(format: "parentCategory.name MATCHES %@", selectedCategory!.name!)
         
         if let additionalPredicate = predicate {
-            request.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [categoryPredicate,
-                                                                                additionalPredicate])
+            request.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [categoryPredicate, additionalPredicate])
         }
         else {
             request.predicate = categoryPredicate
         }
-//        let compoundPredicate = NSCompoundPredicate(andPredicateWithSubpredicates: [categoryPredicate, predicate])
-//
-//        request.predicate = compoundPredicate
         
         do {
             itemArray = try context.fetch(request)
@@ -159,18 +158,4 @@ extension TodoListViewController : UISearchBarDelegate {
             }
         }
     }
-    
-    
 }
-
-
-
-
-
-
-
-
-
-
-
-

@@ -29,11 +29,22 @@ class CategoryViewController: UITableViewController {
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "CategoryCell", for: indexPath)
         
-        let category = categories[indexPath.row]
-        
         cell.textLabel?.text = categories[indexPath.row].name
         
         return cell
+    }
+    
+    // MARK: - TableView Delegate Methods
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        let destinationVC = segue.destination as! TodoListViewController
+        
+        if let indexPath = tableView.indexPathForSelectedRow {
+            destinationVC.selectedCategory = categories[indexPath.row]
+        }
+    }
+    
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        performSegue(withIdentifier: "goToItems", sender: self)
     }
     
     // MARK: - Data Manipulation Methods
@@ -50,7 +61,6 @@ class CategoryViewController: UITableViewController {
     }
     
     func loadCategories() {
-        // with request: NSFetchRequest<Category> = Category.fetchRequest()
         let request: NSFetchRequest<Category> = Category.fetchRequest()
         do {
             categories = try context.fetch(request)
@@ -70,11 +80,13 @@ class CategoryViewController: UITableViewController {
         let action = UIAlertAction(title: "Add", style: .default) { (action) in
             // What will happen once the user clicks the Add Item button on our UIAlert
             
-            let newCategory = Category(context: self.context)
-            newCategory.name = textField.text!
-            self.categories.append(newCategory)
+         
+                let newCategory = Category(context: self.context)
+                newCategory.name = textField.text!
+                self.categories.append(newCategory)
             
-            self.saveCategories()
+                self.saveCategories()
+            
         }
         
         alert.addTextField {(alertTextField) in
@@ -88,20 +100,5 @@ class CategoryViewController: UITableViewController {
         alert.addAction(action)
         
         present(alert, animated: true, completion: nil)
-    }
-    
-    
-    
-    // MARK: - TableView Delegate Methods
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        let destinationVC = segue.destination as! TodoListViewController
-        
-        if let indexPath = tableView.indexPathForSelectedRow {
-            destinationVC.selectedCategory = categories[indexPath.row]
-        }
-    }
-    
-    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        performSegue(withIdentifier: "goToItems", sender: self)
     }
 }
