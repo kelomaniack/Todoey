@@ -80,12 +80,11 @@ class CategoryViewController: UITableViewController {
         let action = UIAlertAction(title: "Add", style: .default) { (action) in
             // What will happen once the user clicks the Add Item button on our UIAlert
             
-         
-                let newCategory = Category(context: self.context)
-                newCategory.name = textField.text!
-                self.categories.append(newCategory)
+            let newCategory = Category(context: self.context)
+            newCategory.name = textField.text!
+            self.categories.append(newCategory)
             
-                self.saveCategories()
+            self.saveCategories()
             
         }
         
