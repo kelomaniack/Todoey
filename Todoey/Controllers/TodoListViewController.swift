@@ -21,6 +21,8 @@ class TodoListViewController: SwipeTableViewController {
         }
     }
     
+    @IBOutlet weak var searchBar: UISearchBar!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -28,10 +30,22 @@ class TodoListViewController: SwipeTableViewController {
     }
     
     override func viewWillAppear(_ animated: Bool) {
-        if let colour = selectedCategory?.colour {
+        if let colourHex = selectedCategory?.colour {
+            
+            title = selectedCategory!.name
             
             guard let navBar = navigationController?.navigationBar else {fatalError("Navigation controller does not exist.")}
-            navBar.barTintColor = UIColor(hexString: colour)
+            
+            if let navBarColour = UIColor(hexString: colourHex) {
+                navBar.barTintColor = UIColor(hexString: colourHex)
+                
+                navBar.tintColor = ContrastColorOf(navBarColour, returnFlat: true)
+                
+                navBar.largeTitleTextAttributes = [NSAttributedStringKey.foregroundColor:
+                    ContrastColorOf(navBarColour, returnFlat: true)]
+                
+                searchBar.barTintColor = navBarColour
+            }
         }
     }
     
@@ -60,7 +74,7 @@ class TodoListViewController: SwipeTableViewController {
         else {
             cell.textLabel?.text = "No Items Added"
         }
-
+        
         return cell
     }
     
@@ -71,7 +85,7 @@ class TodoListViewController: SwipeTableViewController {
         if let item = todoItems?[indexPath.row] {
             do {
                 try realm.write {
-//                    realm.delete(item)
+                    //                    realm.delete(item)
                     item.done = !item.done
                 }
             }
@@ -117,11 +131,11 @@ class TodoListViewController: SwipeTableViewController {
             textField = alertTextField
             
             print(alertTextField.text)
-           
+            
         }
         
         alert.addAction(action)
-    
+        
         present(alert, animated: true, completion: nil)
     }
     
